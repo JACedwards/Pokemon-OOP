@@ -49,7 +49,7 @@ class BuildTeam():
           ind_poke_dict["name"] = name 
           ind_poke_dict["abilities"] = abilities 
           ind_poke_dict["types"] = types 
-          ind_poke_dict["weight"] = str(weight) 
+          ind_poke_dict["weight"] = weight 
 
           master_poke_dict[name] = ind_poke_dict
           self.team_name_dict[self.team_name].append(master_poke_dict) 
