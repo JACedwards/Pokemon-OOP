@@ -1,3 +1,8 @@
+# Two things wanted to do but couldn't figure out:
+     # avoid error when user input name that was not a Pokemon:  tried
+          # things like if/else and try/except
+     # sort by weight:  integer messed me up, tried using str(), but not sure 
+          # was putting str() in the right place or if I needed to do something else too
 
 from distutils.errors import DistutilsOptionError
 from locale import normalize
@@ -10,6 +15,9 @@ class BuildTeam():
      def __init__ (self):
           self.team_name_dict = {}
           self.types_dict = {}
+          self.abilities_dict = {}
+          self.weight_dict = {}
+          self.name_dict = {}
 
      def name_team(self):
           self.team_name = input("What would you like to name your team? ")
@@ -38,15 +46,10 @@ class BuildTeam():
           ind_poke_dict = {}
           master_poke_dict = {}
 
-          # This was my attempt to deal with user not entering a valid Pokemon name, but I got an error saying that "break" can ony be used in a while loop.
-          # if name not in 'https://pokeapi.co/api/v2/pokemon/':
-          #      print(f"I am sorry, but {name} is not a Pokeman. \nPlease try again.")
-          #      break
-
           ind_poke_dict["name"] = name 
           ind_poke_dict["abilities"] = abilities 
           ind_poke_dict["types"] = types 
-          ind_poke_dict["weight"] = weight 
+          ind_poke_dict["weight"] = str(weight) 
 
           master_poke_dict[name] = ind_poke_dict
           self.team_name_dict[self.team_name].append(master_poke_dict) 
@@ -56,6 +59,16 @@ class BuildTeam():
                self.types_dict[types] = [name]
           else:
                self.types_dict[types].append(name)
+
+          if types not in self.abilities_dict:
+               self.abilities_dict[abilities] = [name]
+          else:
+               self.abilities_dict[abilities].append(name)  
+
+          if types not in self.name_dict:
+               self.name_dict[name] = [name]
+          else:
+               self.name_dict[name].append(name)                                        
 
      def see_team(self):
           print("Here is your team: ")
@@ -69,27 +82,36 @@ class BuildTeam():
                          for k_v_pairs in pok_name_dict.items():
                               print(f"\t\t{k_v_pairs[0]}: {k_v_pairs[1]}")
 
-     def sort(self):
-          print(self.types_dict)
-          # <> (In process of trying to do the following for a single pokemon, then will need to be able to iterate through each pokemon and sort all pokemon by type.)
-          #    The above pokemon_list prints this:
-               # {'ditto': {'name': 'ditto', 'abilities': 'limber', 'types': 'normal', 'weight': 40}}
-               #  It looks like a dictionary, but I think error message says it is a list
-               # Goals:
-               #    access values of this dictionary
-               #    get key  value pairs into tuple (or list) form
-               #    Then, sort the entire dictionary by "types"
-               #    ideally, "Type:" would print, then name of type, then new line, and entire       
-               #         dictionary
-               #Entire Dictionary Example:
-                    # {'Craig': [
-                    #    {'ditto': {'name': 'ditto', 'abilities': 'limber', 'types': 'normal', '  weight': 40}}, 
-                    #    {'pikachu': {'name': 'pikachu', 'abilities': 'static', 'types': 'electric', 'weight': 60}}
-                    #         ]}
 
-                    # Type: normal
-                    #      Ditto
-                    #        Pikachu
+     def sort(self):  
+          print("\nHere are your sort choices:")
+          print("[1] By name")
+          print("[2] By type")
+          print("[3] By abilities")
+
+          sort_ask = input("How would you like to sort?  ")
+
+          if sort_ask == '1':
+               print("\nHere are the Pokemon on your team sorted by name: ")
+               for key, value in self.name_dict.items():
+                    print(f"{key.title()}:")
+                    for x in value:
+                         print(f"\t {x.title()}")
+
+          elif sort_ask == '2':
+               print("\nHere are the Pokemon on your team sorted by type: ")
+               for key, value in self.types_dict.items():
+                    print(f"{key.title()}:")
+                    for x in value:
+                         print(f"\t {x.title()}")
+
+          elif sort_ask == '3':
+               print("\nHere are the Pokemon on your team sorted by abilities: ")
+               for key, value in self.abilities_dict.items():
+                    print(f"{key.title()}:")
+                    for x in value:
+                         print(f"\t {x.title()}")
+
 
 
      def quit(self):
@@ -119,23 +141,17 @@ class Run():
           while True:
                print(f"\nWhat would you like to do with your team?")
                print("[1]: Add to team")
-               print("[2]: Remove from team")
-               print("[3]: Search")
-               print("[4]: See team")
-               print("[5]: Sort")
-               print("[6]: Stop team-building")
+               print("[2]: See team")
+               print("[3]: Sort")
+               print("[4]: Stop team-building")
                choice = input("Input a number to indicate what you'd like to do:  ")
                if choice == '1':
                     self.team.add()
                elif choice == '2':
-                    self.team.remove()
-               elif choice == '3':
-                    self.team.search()
-               elif choice == '4':
                     self.team.see_team() 
-               elif choice == '5':
+               elif choice == '3':
                     self.team.sort()
-               elif choice == '6':
+               elif choice == '4':
                     self.team.quit()
                     break
                elif choice != '1' or choice != '2' or choice != '3' or choice != '4' or choice != '5' or choice != '6':
